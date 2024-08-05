@@ -7,6 +7,7 @@ using System.Linq;
 using XIVSlothCombo.Combos.PvE.Content;
 using XIVSlothCombo.CustomComboNS;
 using XIVSlothCombo.CustomComboNS.Functions;
+using static XIVSlothCombo.Combos.JobHelpers.SGEHelper;
 
 namespace XIVSlothCombo.Combos.PvE
 {
@@ -483,7 +484,7 @@ namespace XIVSlothCombo.Combos.PvE
                     foreach (var prio in Config.SGE_ST_Heals_Priority.Items.OrderBy(x => x))
                     {
                         var index = Config.SGE_ST_Heals_Priority.IndexOf(prio);
-                        var config = JobHelpers.SGE.GetMatchingConfigST(index, out var spell, out bool enabled);
+                        var config = GetMatchingConfigST(index, out var spell, out bool enabled);
 
                         if (enabled)
                         {
@@ -527,7 +528,7 @@ namespace XIVSlothCombo.Combos.PvE
                     foreach (var prio in Config.SGE_AoE_Heals_Priority.Items.OrderBy(x => x))
                     {
                         var index = Config.SGE_AoE_Heals_Priority.IndexOf(prio);
-                        var config = JobHelpers.SGE.GetMatchingConfigAoE(index, out var spell, out bool enabled);
+                        var config = GetMatchingConfigAoE(index, out var spell, out bool enabled);
 
                         if (enabled)
                         {
