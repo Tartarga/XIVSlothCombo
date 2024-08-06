@@ -1,10 +1,15 @@
-﻿using static XIVSlothCombo.Combos.PvE.SGE;
+﻿using Dalamud.Game.ClientState.JobGauge.Types;
+using static XIVSlothCombo.Combos.PvE.SGE;
 using static XIVSlothCombo.CustomComboNS.Functions.CustomComboFunctions;
 
 namespace XIVSlothCombo.Combos.JobHelpers
 {
-    internal class SGEHelper
+    internal static class SGEHelper
     {
+        // Sage Gauge & Extensions
+        public static bool HasAddersgall(this SGEGauge gauge) => gauge.Addersgall > 0;
+        public static bool HasAddersting(this SGEGauge gauge) => gauge.Addersting > 0;
+
         public static int GetMatchingConfigST(int i, out uint action, out bool enabled)
         {
             var healTarget = GetHealTarget(Config.SGE_ST_Heal_Adv && Config.SGE_ST_Heal_UIMouseOver);

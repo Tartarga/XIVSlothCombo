@@ -11,7 +11,7 @@ using static XIVSlothCombo.Combos.JobHelpers.SGEHelper;
 
 namespace XIVSlothCombo.Combos.PvE
 {
-    internal static class SGE
+    internal class SGE
     {
         internal const byte JobID = 40;
 
@@ -99,10 +99,7 @@ namespace XIVSlothCombo.Combos.PvE
                 { Dosis3, Debuffs.EukrasianDosis3 }
             };
 
-        // Sage Gauge & Extensions
         public static SGEGauge Gauge => CustomComboFunctions.GetJobGauge<SGEGauge>();
-        public static bool HasAddersgall(this SGEGauge gauge) => gauge.Addersgall > 0;
-        public static bool HasAddersting(this SGEGauge gauge) => gauge.Addersting > 0;
 
         public static class Config
         {
