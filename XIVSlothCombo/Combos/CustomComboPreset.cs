@@ -3062,6 +3062,13 @@ namespace XIVSlothCombo.Combos
         The three digets after RDM.JobID can be used to reorder items in the list
         */
         #region Single Target DPS
+
+        [ConflictingCombos(RDM_ST_DPS)]
+        [ReplaceSkill(RDM.Jolt, RDM.Jolt2, RDM.Jolt3)]
+        [CustomComboInfo("Simple Mode - Single Target", "Replaces Jolts with a full one-button single target rotation.\nThis is the ideal option for newcomers to the job.", RDM.JobID, -2)]
+        RDM_ST_SimpleMode = 13837,
+
+        [ConflictingCombos(RDM_ST_SimpleMode)]
         [ReplaceSkill(RDM.Jolt, RDM.Jolt2)]
         [CustomComboInfo("Single Target DPS Features", "Enables various Single Target options below.", RDM.JobID, 1)]
         RDM_ST_DPS = 13000,
@@ -3120,6 +3127,11 @@ namespace XIVSlothCombo.Combos
         #endregion
 
         #region AoE DPS
+        [ConflictingCombos(RDM_AoE_DPS)]
+        [ReplaceSkill(RDM.Scatter, RDM.Impact)]
+        [CustomComboInfo("Simple Mode - AoE", "Replaces Scatter/Impact with a full one-button AoE rotation.\nThis is the ideal option for newcomers to the job.", RDM.JobID, -1)]
+        RDM_AoE_SimpleMode = 13838,
+
         [ReplaceSkill(RDM.Scatter, RDM.Impact)]
         [CustomComboInfo("AoE DPS Feature", "Enables various AoE Target options below.", RDM.JobID, 310)]
         RDM_AoE_DPS = 13310,
