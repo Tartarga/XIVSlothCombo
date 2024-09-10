@@ -34,68 +34,6 @@ namespace XIVSlothCombo.Combos.PvE
                 }
                 else return mana;
             }
-
-            public static (bool useFire, bool useStone, bool useThunder, bool useAero, bool useThunder2, bool useAero2) CheckBalance()
-            {
-                //SYSTEM_MANA_BALANCING_MACHINE
-                //Machine to decide which ver spell should be used.
-                //Rules:
-                //1.Avoid perfect balancing [NOT DONE]
-                //   - Jolt adds 2/2 mana
-                //   - Scatter/Impact adds 3/3 mana
-                //   - Verstone/Verfire add 5 mana
-                //   - Veraero/Verthunder add 6 mana
-                //   - Veraero2/Verthunder2 add 7 mana
-                //   - Verholy/Verflare add 11 mana
-                //   - Scorch adds 4/4 mana
-                //   - Resolution adds 4/4 mana
-                //2.Stay within difference limit [DONE]
-                //3.Strive to achieve correct mana for double melee combo burst [DONE]
-                //Reset outputs
-                bool useFire = false;
-                bool useStone = false;
-                bool useThunder = false;
-                bool useAero = false;
-                bool useThunder2 = false;
-                bool useAero2 = false;
-
-                //ST
-                if (LevelChecked(Verthunder)
-                    && (HasEffect(Buffs.Dualcast) || HasEffect(All.Buffs.Swiftcast) || HasEffect(Buffs.Acceleration)))
-                {
-                    if (RDMMana.Black <= RDMMana.White || HasEffect(Buffs.VerstoneReady)) useThunder = true;
-                    if (RDMMana.White <= RDMMana.Black || HasEffect(Buffs.VerfireReady)) useAero = true;
-                    if (!LevelChecked(Veraero)) useThunder = true;
-                }
-                if (!HasEffect(Buffs.Dualcast)
-                    && !HasEffect(All.Buffs.Swiftcast)
-                    && !HasEffect(Buffs.Acceleration))
-                {
-                    //Checking the time remaining instead of just the effect, to stop last second bad casts
-                    bool VerFireReady = GetBuffRemainingTime(Buffs.VerfireReady) >= GetActionCastTime(Verfire);
-                    bool VerStoneReady = GetBuffRemainingTime(Buffs.VerstoneReady) >= GetActionCastTime(Verstone);
-
-                    //Prioritize mana balance
-                    if (RDMMana.Black <= RDMMana.White && VerFireReady) useFire = true;
-                    if (RDMMana.White <= RDMMana.Black && VerStoneReady) useStone = true;
-                    //Else use the action if we can
-                    if (!useFire && !useStone && VerFireReady) useFire = true;
-                    if (!useFire && !useStone && VerStoneReady) useStone = true;
-                }
-
-                //AoE
-                if (LevelChecked(Verthunder2)
-                    && !HasEffect(Buffs.Dualcast)
-                    && !HasEffect(All.Buffs.Swiftcast)
-                    && !HasEffect(Buffs.Acceleration))
-                {
-                    if (RDMMana.Black <= RDMMana.White || !LevelChecked(Veraero2)) useThunder2 = true;
-                    else useAero2 = true;
-                }
-                //END_SYSTEM_MANA_BALANCING_MACHINE
-
-                return (useFire, useStone, useThunder, useAero, useThunder2, useAero2);
-            }
         }
 
         private static bool TryOGCDs(uint actionID, in bool SingleTarget, out uint newActionID, bool AdvMode = false)
@@ -391,7 +329,7 @@ namespace XIVSlothCombo.Combos.PvE
                         if (HasEffect(Buffs.Acceleration) || WasLastAction(Buffs.Acceleration))
                         {
                             //Run the Mana Balance Computer
-                            var actions = RDMMana.CheckBalance();
+                            var actions = SpellCombo.SelectSpells();
 
                             if (actions.useAero && LevelChecked(OriginalHook(Veraero)))
                             {
@@ -585,6 +523,68 @@ namespace XIVSlothCombo.Combos.PvE
 
         private class SpellCombo
         {
+            internal static (bool useFire, bool useStone, bool useThunder, bool useAero, bool useThunder2, bool useAero2) SelectSpells()
+            {
+                //SYSTEM_MANA_BALANCING_MACHINE
+                //Machine to decide which ver spell should be used.
+                //Rules:
+                //1.Avoid perfect balancing [NOT DONE]
+                //   - Jolt adds 2/2 mana
+                //   - Scatter/Impact adds 3/3 mana
+                //   - Verstone/Verfire add 5 mana
+                //   - Veraero/Verthunder add 6 mana
+                //   - Veraero2/Verthunder2 add 7 mana
+                //   - Verholy/Verflare add 11 mana
+                //   - Scorch adds 4/4 mana
+                //   - Resolution adds 4/4 mana
+                //2.Stay within difference limit [DONE]
+                //3.Strive to achieve correct mana for double melee combo burst [DONE]
+                //Reset outputs
+                bool useFire = false;
+                bool useStone = false;
+                bool useThunder = false;
+                bool useAero = false;
+                bool useThunder2 = false;
+                bool useAero2 = false;
+
+                //ST
+                if (LevelChecked(Verthunder)
+                    && (HasEffect(Buffs.Dualcast) || HasEffect(All.Buffs.Swiftcast) || HasEffect(Buffs.Acceleration)))
+                {
+                    if (RDMMana.Black <= RDMMana.White || HasEffect(Buffs.VerstoneReady)) useThunder = true;
+                    if (RDMMana.White <= RDMMana.Black || HasEffect(Buffs.VerfireReady)) useAero = true;
+                    if (!LevelChecked(Veraero)) useThunder = true;
+                }
+                if (!HasEffect(Buffs.Dualcast)
+                    && !HasEffect(All.Buffs.Swiftcast)
+                    && !HasEffect(Buffs.Acceleration))
+                {
+                    //Checking the time remaining instead of just the effect, to stop last second bad casts
+                    bool VerFireReady = GetBuffRemainingTime(Buffs.VerfireReady) >= GetActionCastTime(Verfire);
+                    bool VerStoneReady = GetBuffRemainingTime(Buffs.VerstoneReady) >= GetActionCastTime(Verstone);
+
+                    //Prioritize mana balance
+                    if (RDMMana.Black <= RDMMana.White && VerFireReady) useFire = true;
+                    if (RDMMana.White <= RDMMana.Black && VerStoneReady) useStone = true;
+                    //Else use the action if we can
+                    if (!useFire && !useStone && VerFireReady) useFire = true;
+                    if (!useFire && !useStone && VerStoneReady) useStone = true;
+                }
+
+                //AoE
+                if (LevelChecked(Verthunder2)
+                    && !HasEffect(Buffs.Dualcast)
+                    && !HasEffect(All.Buffs.Swiftcast)
+                    && !HasEffect(Buffs.Acceleration))
+                {
+                    if (RDMMana.Black <= RDMMana.White || !LevelChecked(Veraero2)) useThunder2 = true;
+                    else useAero2 = true;
+                }
+                //END_SYSTEM_MANA_BALANCING_MACHINE
+
+                return (useFire, useStone, useThunder, useAero, useThunder2, useAero2);
+            }
+
             private static bool TryGrandImpact(uint actionID, out uint newActionID)
             {
                 if (TraitLevelChecked(Traits.EnhancedAccelerationII)
@@ -643,7 +643,7 @@ namespace XIVSlothCombo.Combos.PvE
 
                 //SHUT UP ITS FINE
                 #pragma warning disable IDE0042
-                var actions = RDMMana.CheckBalance();
+                var actions = SelectSpells();
                 #pragma warning restore IDE0042
 
                 //RDM_VERFIREVERSTONE
@@ -685,7 +685,7 @@ namespace XIVSlothCombo.Combos.PvE
                 
                 //SHUT UP ITS FINE
                 #pragma warning disable IDE0042
-                var actions = RDMMana.CheckBalance();
+                var actions = SelectSpells();
                 #pragma warning restore IDE0042
 
                 if (actions.useThunder2)
